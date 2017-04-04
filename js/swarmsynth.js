@@ -80,7 +80,7 @@ var swarmSynth=(function(){
         vco.frequency.value = 100;
 
         var vca = context.createGain();
-        vca.gain.value = .125;
+        vca.gain.value = 0.125;
         vco.connect(vca);
         vca.connect(envNode);
         vco.start(0);
@@ -90,7 +90,7 @@ var swarmSynth=(function(){
         }
 
         function voiceOn(){
-            vca.gain.value=1;
+            vca.gain.value=0.125;
         }
 
         function voiceOff(){

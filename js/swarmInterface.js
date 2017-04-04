@@ -1,9 +1,19 @@
 "use strict";
 
+
+
+
 var knobUtils = function(){
 	function getAngle(element){
-		var tr=element.css('transform');
-		if(tr=="none") return 0;
+
+		var st=window.getComputedStyle(element);		
+
+		var tr = st.getPropertyValue("-webkit-transform") ||
+        st.getPropertyValue("-moz-transform") ||
+        st.getPropertyValue("transform");
+
+		if(!tr||tr=='none') return 0;
+
 		var values = tr.split('(')[1].split(')')[0].split(',');
 		var a = values[0];
 		var b = values[1];
@@ -14,32 +24,48 @@ var knobUtils = function(){
 		return angle;
 	}
 
+	var setKnobTimings= function(time){
+		var knobs = document.querySelectorAll('.knob > .body');
+
+		[].forEach.call(knobs, function(each){
+			each.style.transitionDuration="." + time + "s";
+		});
+	}
+
 	function turnKnob(knob, callback){
-		var doc=$(document),
-		prevPosition,
+		var prevPosition,
 		currPosition=getAngle(knob);
 		if(callback) callback(currPosition);
-		
-		knob.on("mousedown", function(event) {
+
+		var knobInit = function(event) {
 			prevPosition=getAngle(knob);
+
 			var mouseStart=event.clientY;
-			doc.on('mousemove', function(event){
+
+			var knobTurn=function(event){
 				currPosition=prevPosition - event.clientY + mouseStart;
 				if(currPosition>-151&&currPosition<151)	{
-					knob.css({'transform':'rotate(' + currPosition + 'deg)'});
+					knob.style.webkitTransform = 'rotate(' +currPosition + 'deg)'; 
+				    knob.style.mozTransform = 'rotate(' + currPosition + 'deg)';
+				    knob.style.transform = 'rotate(' + currPosition + 'deg)';
 					callback(currPosition);
 				}
-			});					
-		});
+			}
+			document.addEventListener('mousemove', knobTurn);
 
-		doc.on("mouseup", function(event){
-			doc.off("mousemove");
-		})
+			document.addEventListener("mouseup", function(event){
+				document.removeEventListener("mousemove", knobTurn);
+			});					
+		}
+
+		knob.addEventListener("mousedown", knobInit);
 		return currPosition;
 	}
 
 	function setKnob(knob, turnValue, callback){
-		knob.css({'transform':'rotate(' + turnValue + 'deg)'});
+		knob.style.webkitTransform = 'rotate(' +turnValue + 'deg)'; 
+	    knob.style.mozTransform = 'rotate(' + turnValue + 'deg)';
+	    knob.style.transform = 'rotate(' + turnValue + 'deg)';
 		callback(turnValue);
 		return turnValue;
 	}
@@ -57,31 +83,34 @@ var knobUtils = function(){
 	return {
 		turnKnob:turnKnob,
 		setKnob:setKnob,
+		setKnobTimings:setKnobTimings,
 		linScale:linScale,
 		expScale:expScale
 	}
 }();
 
 var switches = function(){
-	var pSwitch=$("#powerSwitch"),
-	vSwitch=$(".pushswitch");
+	var pSwitch=document.getElementById("powerSwitch"),
+	vSwitch=document.getElementsByClassName("pushswitch");
 
 	var powerSwitch = function() { 
 		var powerOn=true;
-		pSwitch.click(function() {
-			self=$(this);
-			self.toggleClass('on');
+		pSwitch.addEventListener("click", function() {
+			self=this;
+			self.classList.toggle('on');
 
-			if(self.hasClass("on")){ 
+			if(self.classList.contains("on")){ 
 				powerOn=true;
-				vSwitch.each(function(){
-					self=$(this);
-					if(self.hasClass("pushed")) self.addClass("on");
+				[].forEach.call(vSwitch, function(each){
+					if((each).classList.contains('pushed')) each.classList.add('on');
 				});
 			}
 			else { 
 				powerOn=false;
-				vSwitch.removeClass("on");
+				[].forEach.call(vSwitch, function(each){
+					each.classList.remove('on');
+				});
+
 				swarmSynth.resetEnvelopes();
 			}
 
@@ -92,14 +121,17 @@ var switches = function(){
 	}();
 
 	//toggle individual voices on or off
-	var voices=function(){
-		vSwitch.click(function(){
-			self=$(this);
-			self.toggleClass("on");
-			self.toggleClass("pushed");
-			if(self.hasClass("on")) swarmSynth.voices[vSwitch.index(this)].voiceOn();
-			else swarmSynth.voices[vSwitch.index(this)].voiceOff();
-		});
+	var voices=function(){	
+		for(var i=0;i<vSwitch.length;i++){
+			vSwitch[i].idx=i;
+			vSwitch[i].addEventListener("click", function(){
+				this.classList.toggle("on");
+				this.classList.toggle("pushed");
+				
+				if(this.classList.contains("on")) swarmSynth.voices[this.idx].voiceOn();
+				else swarmSynth.voices[this.idx].voiceOff();
+			});
+		};
 	}();
 }();
 
@@ -245,31 +277,31 @@ var setPanelKnobs=function(knobs){
 	if(!knobs){
 		knobs=panelKnobs;
 		init=true;				
-	} else $(".knob .body").css("transition-duration", "0.5s")
+	} else  knobUtils.setKnobTimings(0.5);
 	
-
 	for(var i=0; i<knobs.length;i++){
-		knob=$("#" + panelKnobs[i].id + " .body");
-		if(init) knobUtils.turnKnob(knob, panelKnobs[i].callback);
+		knob=document.querySelector('#' + panelKnobs[i].id  + ' > .body');
+		if(init) knobUtils.turnKnob(knob, panelKnobs[i].callback);		
 		knobUtils.setKnob(knob, panelKnobs[i].turnValue, panelKnobs[i].callback);
 	}
-	$(".knob .body").css("transition-duration", "0s");
+	knobUtils.setKnobTimings(0);
 }();
 
 var ribbonController = function(){
-	var ribbon1=$("#ribbon1");
-	var ribbon1Offset=parseInt(ribbon1.offset().left);
+	var ribbon1=document.getElementById("ribbon1");
+	var ribbon1Offset=parseInt(ribbon1.getBoundingClientRect().left);
 
-	var ribbon2=$("#ribbon2");
-	var ribbon2Offset=parseInt(ribbon2.offset().left);
+	var ribbon2=document.getElementById("ribbon2");
+	var ribbon2Offset=parseInt(ribbon2.getBoundingClientRect().left);
+
 	var swarmRibMargin=10;
     var cluster = [];
     var centerTone;
     var centerNote;
     var swarmInterval=.1;
 
-    var pitchRibbonScale=1000/ribbon1.width();
-    var swarmRibbonScale=125/ribbon2.width();
+    var pitchRibbonScale=1000/ribbon1.getBoundingClientRect().width;
+    var swarmRibbonScale=125/ribbon2.getBoundingClientRect().width;
 
     var voiceGate=swarmSynth.volEnvelope;
 	var filterGate=swarmSynth.filterEnvelope;
@@ -302,32 +334,40 @@ var ribbonController = function(){
     	swarmSynth.setPitches(makeCluster(centerNote));
     }
 
-    ribbon1.on("mousedown", function(event) {
-        sendTone(event);	            
+    var ribbon1Down=function(event){
+    	sendTone(event);	            
         voiceGate(1);
         filterGate(1);
+    }
 
-        ribbon1.on("mousemove", function(event){
-            sendTone(event);
-        });
+    ribbon1.addEventListener("mousedown", function(event) {
+        ribbon1Down(event);
+        ribbon1.addEventListener("mousemove", sendTone);
     });
 
-    ribbon1.on("mouseup mouseleave",function(event) {
-        ribbon1.off("mousemove");
+    ribbon1.addEventListener("mouseup",function(event) {
+        ribbon1.removeEventListener("mousemove", sendTone);
         voiceGate(0);
         filterGate(0);
     });
 
-
-    ribbon2.on("mousedown", function(event) {
-        swarmTone(event);
-
-        ribbon2.on("mousemove", function(event){
-            swarmTone(event);
-        });
+    ribbon1.addEventListener("mouseleave",function(event) {
+        ribbon1.removeEventListener("mousemove", sendTone);
+        voiceGate(0);
+        filterGate(0);
     });
 
-    ribbon2.on("mouseup mouseleave",function(event) {
-        ribbon2.off("mousemove");
+    ribbon2.addEventListener("mousedown", function(event) {
+        swarmTone(event);
+
+        ribbon2.addEventListener("mousemove", swarmTone);
+    });
+
+    ribbon2.addEventListener("mouseup",function(event) {
+        ribbon2.removeEventListener("mousemove", swarmTone);
+    });
+
+    ribbon2.addEventListener("mouseleave",function(event) {
+        ribbon2.removeEventListener("mousemove", swarmTone);
     });
 }();

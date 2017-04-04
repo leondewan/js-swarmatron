@@ -247,6 +247,8 @@ html.webaudio #swarmatron {
 }
 
 .toggleswitch.on .collar {
+	-webkit-transform: scaleY(-1);
+	-moz-transform: scaleY(-1);
 	transform: scaleY(-1);
 }
 
