@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<title>HTML5 Swarmatron-Like Synthesizer</title>
+
+		<meta charset="UTF-8">
+		<meta name="description" content="Swarmatron-like HTML5 Synth by Leon Dewan">
+		<meta name="keywords" content="leon brian dewan swarmatron html5 synthesizer">
+		<meta name="author" content="Leon Dewan">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">		
+
+		<link rel="stylesheet" type="text/css" href="css/swarm.css" />
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		<script src="js/modernizr-custom.js"></script>
+	</head>
+	<body>
+		<header>An HTML5 Swarmatron-like Sound Synthesis Unit</header>
+		<main>
+			<p>The Swarmatron is an electronic music instrument designed by Brian Dewan and Leon Dewan of Dewanatron.
+				There are currently 85 units in existence.  Each Swarmatron has been built by hand.
+			</p>
+
+			<p>The following digital implementation is a rough emulation of a Swarmatron coded for the purpose of exploring some of the capabilities the Web Audio API offers.
+			</p>
+
+			<div id="swarmatron">
+				<div id="mainpanel" class="group">
+					<label>VOICES 1 - 8 </label>
+					<ul class="mainswitchrow group">
+						<li class="knob" id="vol">	
+							<label>V</label>				
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+
+						<li class="pushswitch on pushed" id="voice1"></li>
+						<li class="pushswitch on pushed" id="voice2"></li>
+						<li class="pushswitch on pushed" id="voice3"></li>
+						<li class="pushswitch on pushed" id="voice4"></li>
+						<li class="pushswitch on pushed" id="voice5"></li>
+						<li class="pushswitch on pushed" id="voice6"></li>
+						<li class="pushswitch on pushed" id="voice7"></li>
+						<li class="pushswitch on pushed" id="voice8"></li>
+
+						<li class="toggleswitch on" id="powerSwitch">	
+							<label class="top">ON</label>				
+							<div class="hexnut">
+								<div class="collar">
+									<div class="bat"></div>
+								</div>
+							</div>
+							<label class="bottom">OFF</label>
+						</li>
+
+					</ul>
+
+					<ul class="mainknobrow group">
+						<li class="knob" id="track">
+							<label>TR</label>					
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+						<li class="knob" id="res">
+							<label>Q</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+						
+						<li class="knob" id="cutoff">
+							<label>FRQ</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+
+						<li class="knob" id="env">
+							<label>N</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+
+						<li class="knob" id="drive">
+							<label>DR</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+					</ul>
+
+					<ul class="mainknobrow group">
+						<li class="knob" id="attack">
+							<label>A</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+						<li class="knob" id="decay">
+							<label>D</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+						<li class="knob" id="sustain">
+							<label>S</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+						<li class="knob" id="release">
+							<label>R</label>						
+							<div class="body">
+								<div class="pointer"></div>
+							</div>
+						</li>
+					</ul>
+				</div>	
+
+				<div id="ribbonpanel" class="group">
+					<div id="ribbonholder">
+						<div id="ribbon1"></div>
+						<div id="ribbon2"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer>
+			<p>If you don't see a Swarmatron directly above, it is because your browser does not support
+				Web Audio.  Many modern browsers, among them current versions of Chrome, Firefox and Safari, 
+				do support Web Audio.
+			</p>
+		</footer>
+
+		<script src="js/swarmSynth.js"></script>
+		<script src="js/swarmInterface.js"></script>
+	</body>
+</html>
