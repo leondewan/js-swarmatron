@@ -18,7 +18,6 @@ var swarmSynth=(function(){
     var AudioContext = window.AudioContext || window.webkitAudioContext;
     var context = new AudioContext();
 
-
     var swOverdrive = context.createWaveShaper();
 
     //a basic distortion algorithm that everybody seems to use
@@ -83,7 +82,7 @@ var swarmSynth=(function(){
         vca.gain.value = 0.125;
         vco.connect(vca);
         vca.connect(envNode);
-        vco.start(0);
+        //vco.start(0);
 
         function setFrequency(freq){
             vco.frequency.value=freq;
@@ -106,7 +105,8 @@ var swarmSynth=(function(){
             voiceOn:voiceOn,
             voiceOff:voiceOff,
             voiceVol:voiceVol,
-            vca:vca
+            vca:vca,
+            vco:vco
         }
     }
     
@@ -118,7 +118,7 @@ var swarmSynth=(function(){
         voice.vca.connect(voiceMerger, 0, 0);
         voices.push(voice);
     }
-
+    
     //set voice frequencies
     function setPitches(freqArray){
         for(i=0;i<freqArray.length;i++){
@@ -196,6 +196,15 @@ var swarmSynth=(function(){
         swarmFilterDetune.value=0;
     }
 
+    //for IOS
+
+    function startVoices(){
+        for(var i=0;i<voices.length;i++){
+            voices[i].vco.start(0);
+        }
+        return voices[0].vco;
+    }
+
     voiceMerger.connect(envNode);
     envNode.connect(swarmFilter);
     swarmFilter.connect(swOverdrive);
@@ -214,6 +223,7 @@ var swarmSynth=(function(){
         envSettings:envSettings,
         volEnvelope:volEnvelope,
         filterEnvelope:filterEnvelope,
-        resetEnvelopes:resetEnvelopes
+        resetEnvelopes:resetEnvelopes,
+        startVoices:startVoices
     }
 })();

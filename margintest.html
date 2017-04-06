@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+
+	<head>
+		<title>margin percent test</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style>
+		.container2 {
+			position:relative;
+			margin:auto;
+			text-align: center;
+			background:#88aaaa;
+			width:90%;
+			height:250px;
+			padding:20px;
+			border:1px 00f solid;
+		}
+		
+		ul {
+			list-style-type: none;
+			margin:0;
+			padding:0;
+		} 
+
+		.mainswitchrow {
+			width:83%;
+			border:1px #090 solid;
+			margin:auto;
+			clear:both;
+			margin-top:20px;
+		}
+
+		.mainswitchrow li {
+			float:left;
+			width:40px;
+			height:40px;
+			margin:10px 1%;
+			background:#827;
+			border:#f00 1px solid;
+		}	
+
+		.mainswitchrow li.knob, .mainswitchrow li.toggleswitch {
+			margin-top:15px;
+		}
+
+		.mainswitchrow li.knob, .mainswitchrow li.toggleswitch {
+			margin-top:15px;
+		}
+
+		.mainswitchrow li.knob {
+			margin-right:6%;
+		}
+
+		.mainswitchrow li.toggleswitch {
+			
+			margin-left:6%;
+		}
+
+		.group:after {
+		  content: "";
+		  display: table;
+		  clear: both;
+		}
+
+		</style>
+
+
+	</head>
+	<body>
+		<div class="container2">
+			<ul class="mainswitchrow group">
+				<li class="knob" id="vol"></li>
+
+				<li class="pushswitch on pushed" id="voice1"></li>
+				<li class="pushswitch on pushed" id="voice2"></li>
+				<li class="pushswitch on pushed" id="voice3"></li>
+				<li class="pushswitch on pushed" id="voice4"></li>
+				<li class="pushswitch on pushed" id="voice5"></li>
+				<li class="pushswitch on pushed" id="voice6"></li>
+				<li class="pushswitch on pushed" id="voice7"></li>
+				<li class="pushswitch on pushed" id="voice8"></li>
+
+				<li class="toggleswitch"></li>
+
+			</ul>
+		</div>
+		
+	</body>
+</html>
+
+

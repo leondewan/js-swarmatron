@@ -1,11 +1,7 @@
 "use strict";
 
-
-
-
 var knobUtils = function(){
 	function getAngle(element){
-
 		var st=window.getComputedStyle(element);		
 
 		var tr = st.getPropertyValue("-webkit-transform") ||
@@ -35,15 +31,23 @@ var knobUtils = function(){
 	function turnKnob(knob, callback){
 		var prevPosition,
 		currPosition=getAngle(knob);
+
 		if(callback) callback(currPosition);
 
 		var knobInit = function(event) {
-			prevPosition=getAngle(knob);
+			event.preventDefault();
+			var turnStart;
 
-			var mouseStart=event.clientY;
+			prevPosition=getAngle(knob);
+			
+			if(event.touches) turnStart= event.changedTouches[0].clientY;
+			else turnStart=event.clientY;
 
 			var knobTurn=function(event){
-				currPosition=prevPosition - event.clientY + mouseStart;
+				event.preventDefault();
+				if(event.touches) currPosition=prevPosition - event.changedTouches[0].clientY + turnStart;
+				else currPosition=prevPosition - event.clientY + turnStart;
+
 				if(currPosition>-151&&currPosition<151)	{
 					knob.style.webkitTransform = 'rotate(' +currPosition + 'deg)'; 
 				    knob.style.mozTransform = 'rotate(' + currPosition + 'deg)';
@@ -51,14 +55,21 @@ var knobUtils = function(){
 					callback(currPosition);
 				}
 			}
+
 			document.addEventListener('mousemove', knobTurn);
+			document.addEventListener('touchmove', knobTurn);
 
 			document.addEventListener("mouseup", function(event){
 				document.removeEventListener("mousemove", knobTurn);
+			});	
+
+			document.addEventListener("touchend", function(event){
+				document.removeEventListener("touchmove", knobTurn);
 			});					
 		}
 
 		knob.addEventListener("mousedown", knobInit);
+		knob.addEventListener("touchstart", knobInit);
 		return currPosition;
 	}
 
@@ -95,42 +106,52 @@ var switches = function(){
 
 	var powerSwitch = function() { 
 		var powerOn=true;
-		pSwitch.addEventListener("click", function() {
+
+		var flipSwitch = function(event) {
+			event.preventDefault();
 			self=this;
 			self.classList.toggle('on');
 
 			if(self.classList.contains("on")){ 
 				powerOn=true;
-				[].forEach.call(vSwitch, function(each){
-					if((each).classList.contains('pushed')) each.classList.add('on');
+				[].forEach.call(vSwitch, function(each, idx){
+					if((each).classList.contains('pushed')) {
+						each.classList.add('on');
+						swarmSynth.voices[idx].voiceOn();
+					}
 				});
 			}
 			else { 
 				powerOn=false;
-				[].forEach.call(vSwitch, function(each){
+				[].forEach.call(vSwitch, function(each, idx){
 					each.classList.remove('on');
+					swarmSynth.voices[idx].voiceOff();
 				});
 
 				swarmSynth.resetEnvelopes();
 			}
+		}
 
-			for(var i=0; i<swarmSynth.voices.length; i++){
-				powerOn ? swarmSynth.voices[i].voiceOn():swarmSynth.voices[i].voiceOff();
-			}
-		});
+		pSwitch.addEventListener("click", flipSwitch);
+		pSwitch.addEventListener('touchstart', flipSwitch);
 	}();
 
 	//toggle individual voices on or off
 	var voices=function(){	
+
+		var pushSwitch=function(event){
+			event.preventDefault();
+			this.classList.toggle("on");
+			this.classList.toggle("pushed");
+			
+			if(this.classList.contains("on")) swarmSynth.voices[this.idx].voiceOn();
+			else swarmSynth.voices[this.idx].voiceOff();
+		}
+
 		for(var i=0;i<vSwitch.length;i++){
 			vSwitch[i].idx=i;
-			vSwitch[i].addEventListener("click", function(){
-				this.classList.toggle("on");
-				this.classList.toggle("pushed");
-				
-				if(this.classList.contains("on")) swarmSynth.voices[this.idx].voiceOn();
-				else swarmSynth.voices[this.idx].voiceOff();
-			});
+			vSwitch[i].addEventListener("click", pushSwitch);
+			vSwitch[i].addEventListener("touchstart", pushSwitch);
 		};
 	}();
 }();
@@ -288,6 +309,8 @@ var setPanelKnobs=function(knobs){
 }();
 
 var ribbonController = function(){
+	var startup;
+
 	var ribbon1=document.getElementById("ribbon1");
 	var ribbon1Offset=parseInt(ribbon1.getBoundingClientRect().left);
 
@@ -324,15 +347,56 @@ var ribbonController = function(){
     }
 
     function sendTone(event){
-    	centerNote=(event.clientX - ribbon1Offset)*pitchRibbonScale;
+        event.preventDefault();
+        if(event.touches) {
+        	if(checkRibbonBoundaries(event.changedTouches[0])) {
+        		ribbon1.removeEventListener("touchmove", sendTone);
+		        voiceGate(0);
+		        filterGate(0);
+		        return;
+        	}
+        	centerNote=(event.changedTouches[0].clientX - ribbon1Offset)*pitchRibbonScale;
+        }
+    	else centerNote=(event.clientX - ribbon1Offset)*pitchRibbonScale;
+    	
+        if(!startup) startup = swarmSynth.startVoices();
+
         swarmSynth.setPitches(makeCluster(centerNote));
         filterController.ribbonTrack(centerNote);
     }
 
-    function swarmTone(event){	        	
-    	swarmInterval=(event.clientX-ribbon2Offset-swarmRibMargin)*swarmRibbonScale;
+    function swarmTone(event){
+    	event.preventDefault();
+
+
+    	if(event.touches) {
+    		if(checkRibbonBoundaries(event.changedTouches[0])) {
+        		ribbon2.removeEventListener("touchmove", swarmTone);
+		        return;
+        	}
+    		swarmInterval=(event.changedTouches[0].clientX-ribbon2Offset-swarmRibMargin)*swarmRibbonScale;
+    		// console.log(event.touches.length);
+    	}	
+    	else swarmInterval=(event.clientX-ribbon2Offset-swarmRibMargin)*swarmRibbonScale;
+    	
     	swarmSynth.setPitches(makeCluster(centerNote));
     }
+
+    function checkRibbonBoundaries(evt) {
+		var xpos=evt.clientX,
+		ypos=evt.clientY,
+		bound=evt.target.getBoundingClientRect();
+
+		if(xpos < bound.left || 
+			xpos > bound.right||
+			ypos < bound.top ||
+			ypos > bound.bottom) {
+
+			return true;
+		}
+		else return false;
+	}
+
 
     var ribbon1Down=function(event){
     	sendTone(event);	            
@@ -357,6 +421,17 @@ var ribbonController = function(){
         filterGate(0);
     });
 
+    ribbon1.addEventListener("touchstart", function(event) {
+        ribbon1Down(event);
+        ribbon1.addEventListener("touchmove", sendTone);
+    });
+
+    ribbon1.addEventListener("touchend",function(event) {
+        ribbon1.removeEventListener("touchmove", sendTone);
+        voiceGate(0);
+        filterGate(0);
+    });
+
     ribbon2.addEventListener("mousedown", function(event) {
         swarmTone(event);
 
@@ -369,5 +444,14 @@ var ribbonController = function(){
 
     ribbon2.addEventListener("mouseleave",function(event) {
         ribbon2.removeEventListener("mousemove", swarmTone);
+    });
+
+    ribbon2.addEventListener("touchstart", function(event) {
+        swarmTone(event);
+        ribbon2.addEventListener("touchmove", swarmTone);
+    });
+
+    ribbon2.addEventListener("touchend",function(event) {
+        ribbon2.removeEventListener("touchmove", swarmTone);
     });
 }();

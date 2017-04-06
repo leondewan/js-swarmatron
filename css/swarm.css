@@ -10,23 +10,22 @@ ul {
 	} 
 
 header {
-	font-size: 24px;
+	font-size: 1.5em;
 	font-style: bold;
 	margin-top:30px;
-	margin-left:40px;
+	margin-left:10%;
 }	
 
-p, footer {
-	width:75%;
+main, footer {
+	margin-left:5%;
 }
 
 p {
-	margin-left:40px;
+	width:75%;
 }
 
-
 label {
-	font:16px 'PT Sans', sans-serif;
+	font:1em 'PT Sans', sans-serif;
 	color:#566;
 	text-shadow: #acc 1px 1px 0;
 	width:100%;
@@ -34,31 +33,23 @@ label {
 	position:absolute;
 	left:0;
 	top:20px;
-}	
+}
 
 footer {
-	font-size:12px;
+	font-size:.75em;
 	margin-top:30px;
 }
 
-#swarmatron{
-	margin-left: 50px;
+#swarmatron {
 	text-align:center;
-	width:1100px;
+	width:90%;
+	max-width:1000px;
 	margin-top:50px;
 	display:none;
 }
 
 html.webaudio #swarmatron {
 	display:block;
-}
-
-
-#testobjects{
-	width:200px;
-	height:200px;
-	background:#88aaaa;
-	padding:20px;
 }
 
 #mainpanel {
@@ -71,8 +62,8 @@ html.webaudio #swarmatron {
       to right, 
       #8aa 99.9%, #333 0.1%
     );
-	width:950px;
-	height:250px;
+	width:95%;
+	/*height:250px;*/
 	padding:20px;
 	border-top: 10px #999 ridge;
 	border-left: 10px #999 ridge;
@@ -90,7 +81,7 @@ html.webaudio #swarmatron {
       to right, 
       #8aa 99.9%, #333 0.1%
     );
-	width:950px;
+	width:95%;
 	padding:20px;
 	border-bottom: 10px #999 ridge;
 	border-left: 10px #999 ridge;
@@ -108,18 +99,14 @@ html.webaudio #swarmatron {
 #ribbonholder{
 	margin:auto;
 	text-align:center;
-	width:850px;
-}
-
-.ribknobcol{
-	float:left;
-	margin-top:10px;
+	width:90%;
 }
 
 .mainknobrow, .mainswitchrow {
 	display:inline-block;
 	float:none;
 	margin:auto;
+	clear:both;
 	margin-top:20px;
 }
 
@@ -127,7 +114,6 @@ html.webaudio #swarmatron {
 	float:left;
 	margin:10px 40px;
 }
-
 
 .mainswitchrow li {
 	float:left;
@@ -154,7 +140,7 @@ html.webaudio #swarmatron {
 
 #ribbon1 {
 	margin:auto;
-	width:800px;
+	width:95%;
 	height:50px;
 	background-color: #699;
 	margin-top:30px;
@@ -169,7 +155,7 @@ html.webaudio #swarmatron {
 
 #ribbon2 {
 	margin:auto;
-	width:600px;
+	width:70%;
 	height:50px;
 	background-color: #699;
 	margin-top:20px;
@@ -332,4 +318,121 @@ html.webaudio #swarmatron {
     transition-duration: 5s;
     transition-timing-function: linear;
 }
+
+
+@media (max-width: 1100px) {
+  	.mainswitchrow li.knob {
+		margin-right:35px;
+	}
+
+	.mainswitchrow li.toggleswitch {
+		margin-left:35px;
+	}
+
+	.mainswitchrow li {
+		margin-left:10px;
+		margin-right:10px;
+	}
+
+	.mainknobrow li {
+		margin-left:30px;
+		margin-right:30px;
+	}
+ }
+
+ @media (max-width: 915px) {
+  	#mainpanel {
+  		padding-bottom:0;
+  	}
+
+  	#ribbon1 {
+  		margin-top:15px;
+  	}
+
+  	#ribbon2 {
+  		margin-top:10px;
+  		margin-bottom:5px;
+  	}
+
+ 	.mainknobrow, .mainswitchrow {
+ 		margin-top:10px;
+ 	}
+
+  	.mainswitchrow li.knob {
+		margin-right:20px;
+	}
+
+	.mainswitchrow li.toggleswitch {
+		margin-left:20px;
+	}
+
+	.mainswitchrow li {
+		margin-left:5px;
+		margin-right:5px;
+	}
+
+	.mainknobrow li {
+		margin-left:20px;
+		margin-right:20px;
+	}
+ }
+
+ @media (max-width: 760px) {
+ 	.mainswitchrow li.knob {
+		margin-right:10px;
+	}
+
+	.mainswitchrow li.toggleswitch {
+		margin-left:10px;
+	}
+
+	.mainswitchrow li {
+		margin-left:2px;
+		margin-right:2px;
+	}
+
+	.mainknobrow li {
+		margin-left:15px;
+		margin-right:15px;
+	}
+ }
+
+ @media (max-width:620px){
+ 	main {
+ 		margin-left:5px;
+ 		width:575px;
+ 	}
+
+ 	#mainpanel, #ribbonpanel {
+ 		padding:10px;
+ 	}
+
+ 	label.voices {
+	top:10px;
+
+	#ribbon1 {
+  		margin-top:10px;
+  	}
+
+  	#ribbon2 {
+  		margin-top:7px;
+  		margin-bottom:0;
+  	}
+
+ 	.mainknobrow, .mainswitchrow {
+ 		margin-top:7px;
+ 	}
+
+ 	.mainknobrow li, .mainswitchrow li {
+		margin-top: 5px;
+		margin-bottom:5px;
+	}	
+
+	.mainswitchrow li.knob, .mainswitchrow li.toggleswitch {
+		margin-top:10px;
+	}
+
+
+}
+ }
 
