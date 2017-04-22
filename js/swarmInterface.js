@@ -103,9 +103,10 @@ var knobUtils = function(){
 var switches = function(){
 	var pSwitch=document.getElementById("powerSwitch"),
 	vSwitch=document.getElementsByClassName("pushswitch");
+	var powerOn;
 
 	var powerSwitch = function() { 
-		var powerOn=true;
+		powerOn=true;
 
 		var flipSwitch = function(event) {
 			event.preventDefault();
@@ -141,7 +142,7 @@ var switches = function(){
 
 		var pushSwitch=function(event){
 			event.preventDefault();
-			this.classList.toggle("on");
+			if(powerOn) this.classList.toggle("on");
 			this.classList.toggle("pushed");
 			
 			if(this.classList.contains("on")) swarmSynth.voices[this.idx].voiceOn();
