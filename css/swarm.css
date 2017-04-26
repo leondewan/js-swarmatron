@@ -354,9 +354,13 @@ html.webaudio #swarmatron {
   		margin-bottom:5px;
   	}
 
- 	.mainknobrow, .mainswitchrow {
+ 	.mainknobrow {
  		margin-top:10px;
  	}
+
+ 	.mainswitchrow {
+        margin-top:20px;
+    }
 
   	.mainswitchrow li.knob {
 		margin-right:20px;
@@ -374,6 +378,18 @@ html.webaudio #swarmatron {
 	.mainknobrow li {
 		margin-left:20px;
 		margin-right:20px;
+	}
+
+	.knob label{
+		top:-25px;
+	}
+
+	.toggleswitch .top {
+		top:-30px;
+	}
+
+	.toggleswitch .bottom {
+		top:40px;
 	}
  }
 
@@ -408,7 +424,8 @@ html.webaudio #swarmatron {
  	}
 
  	label.voices {
-	top:10px;
+        top:4px;
+    }
 
 	#ribbon1 {
   		margin-top:10px;
@@ -423,16 +440,13 @@ html.webaudio #swarmatron {
  		margin-top:7px;
  	}
 
- 	.mainknobrow li, .mainswitchrow li {
+ 	.mainknobrow li {
 		margin-top: 5px;
 		margin-bottom:5px;
 	}	
 
-	.mainswitchrow li.knob, .mainswitchrow li.toggleswitch {
+	.mainswitchrow li.knob {
 		margin-top:10px;
 	}
-
-
-}
  }
 

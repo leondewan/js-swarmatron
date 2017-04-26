@@ -376,7 +376,6 @@ var ribbonController = function(){
 		        return;
         	}
     		swarmInterval=(event.changedTouches[0].clientX-ribbon2Offset-swarmRibMargin)*swarmRibbonScale;
-    		// console.log(event.touches.length);
     	}	
     	else swarmInterval=(event.clientX-ribbon2Offset-swarmRibMargin)*swarmRibbonScale;
     	
