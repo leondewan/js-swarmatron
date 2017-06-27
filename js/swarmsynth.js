@@ -10,7 +10,7 @@ var swarmSynth=(function(){
         var startver=startfox+8;
         var endver=startver+2; 
         var foxVersion=parseInt(ua.substring(startver, endver));
-        linearEnv=true;
+        if(foxVersion < 49) linearEnv=true;
     }
     //end bug fix code
 

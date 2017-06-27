@@ -420,9 +420,8 @@ html.webaudio #swarmatron {
  }
 
  @media (max-width:620px){
- 	main {
- 		margin-left:5px;
- 		width:575px;
+ 	#swarmatron {
+ 		width:560px;
  	}
 
  	#mainpanel, #ribbonpanel {
