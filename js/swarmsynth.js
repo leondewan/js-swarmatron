@@ -1,5 +1,7 @@
 "use strict";
 
+//update to es2022
+
 var swarmSynth=(function(){
     
     //This code is a bug fix for firefox v48 with respect to setTargetTime, an exponential Webaudio paramater decay.
